@@ -6,11 +6,14 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { useProtectedRoute } from "@/helper/useProtectedRoute";
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
-export const NavMenu = (props: NavigationMenuProps) => (
-  <NavigationMenu {...props}>
+export const NavMenu = (props: NavigationMenuProps) => {
+ const {user} = useProtectedRoute()
+return(
+    <NavigationMenu {...props}>
     <NavigationMenuList className="gap-6 space-x-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start font-medium">
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
@@ -27,11 +30,15 @@ export const NavMenu = (props: NavigationMenuProps) => (
           <Link href="/about">About</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
-      <NavigationMenuItem>
+    {user?.email && (  <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link href="/dashboard">Dashboard</Link>
         </NavigationMenuLink>
-      </NavigationMenuItem>
+      </NavigationMenuItem>)}
     </NavigationMenuList>
   </NavigationMenu>
-);
+)
+
+}
+
+

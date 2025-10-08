@@ -3,26 +3,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, PlusCircle, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/provider/AuthProvider";
+
 
 
 export default function Sidebar() {
 
-    const router = useRouter()
 
-     const Logout = async () => {
-    try {
-      await fetch("/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      router.push("/");
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
-  };
-
+const {logout}= useAuth()
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-black text-white">
@@ -37,7 +25,7 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          href="/dashboard/create-blog"
+          href="/dashboard/createBlogs"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100 hover:text-black"
         >
           <PlusCircle className="h-4 w-4" />
@@ -51,7 +39,7 @@ export default function Sidebar() {
           <Button
             variant="destructive"
             className="w-full justify-start gap-2 cursor-pointer"
-            onClick={Logout}
+            onClick={logout}
           >
             <LogOut className="h-4 w-4" />
             Logout
