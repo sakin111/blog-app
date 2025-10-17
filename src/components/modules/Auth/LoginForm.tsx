@@ -48,20 +48,22 @@ export default function LoginForm() {
       } else {
         toast.error( "User Login Failed");
       }
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
-      if (axios.isAxiosError(err) && err.response) {
-        const message = (err.response?.data as { message?: string })?.message;
-        if (message === "Password does not match") {
-          toast.error("Invalid credentials");
-        } else {
-          toast.error(message || "Login failed");
-        }
-      } else {
-        toast.error((err as Error)?.message || "Login failed");
-      }
+    }   catch (err: any) {
+  if (axios.isAxiosError(err) && err.response) {
+    const message = err.response.data?.message;
+    console.log(message);
 
+    if (message === "Invalid credentials") {
+      toast.error("Invalid credentials");
+    } else if (message === "User not found") {
+      toast.error("User not found");
+    } else {
+      toast.error(message || "Login failed");
     }
+  } else {
+    toast.error("Login failed");
+  }
+}
   }
 
   return (

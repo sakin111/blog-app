@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function BlogCard({ post }: { post: any }) {
+export default function Featured({ post }: { post: any }) {
   return (
     <Link
       href={`/blogs/${post.id}`}

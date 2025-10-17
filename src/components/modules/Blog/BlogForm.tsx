@@ -19,12 +19,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCreateBlog } from "@/action/useCreateBlog";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 const blogSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   content: z.string().min(10, "Content must be at least 10 characters"),
-  thumbnail: z.string().url("Must be a valid URL"),
+  thumbnail: z.url("Must be a valid URL"),
   tags: z.string().optional(),
   isFeatured: z.enum(["true", "false"]),
 });
@@ -34,6 +35,7 @@ type BlogFormValues = z.infer<typeof blogSchema>;
 export default function BlogForm() {
   const [loading, setLoading] = useState(false);
   const createBlogs = useCreateBlog();
+  const router = useRouter()
 
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogSchema),
@@ -50,8 +52,16 @@ export default function BlogForm() {
   const onSubmit = async (values: BlogFormValues) => {
     try {
       setLoading(true);
-      await createBlogs.mutateAsync(values);
+    const formattedData = {
+      ...values,
+      tags: values.tags
+        ? values.tags.split(",").map((tag) => tag.trim())
+        : [],
+      isFeatured: values.isFeatured === "true",
+    };
+      await createBlogs.mutateAsync(formattedData);
       toast.success("Blog created successfully!");
+      router.push("/blogs")
       form.reset();
     } catch (err) {
 

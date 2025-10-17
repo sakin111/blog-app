@@ -12,7 +12,7 @@ export default async function BlogDetailsCard({ blog }: { blog: any }) {
     <main className="max-w-4xl mx-auto py-30 px-4">
       <h1 className="text-5xl font-bold mb-6">{blog?.title}</h1>
 
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-4 mb-8 ">
         <Image
           src={
             blog.author.picture ||
@@ -47,7 +47,7 @@ export default async function BlogDetailsCard({ blog }: { blog: any }) {
         </div>
       )}
 
-      <article className="prose prose-lg max-w-none">
+      <article className="prose prose-lg max-w-none my-10">
         <p>{blog.content}</p>
       </article>
     </main>
