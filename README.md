@@ -1,37 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog App
 
-## Getting Started
+A Next.js + TypeScript blog application scaffolded with a component-driven UI. It includes client and server actions, reusable UI components, and a dashboard for managing blogs and profile updates.
 
-First, run the development server:
+## Features
 
-```bash
+- Next.js (App Router) with server and client components
+- TypeScript and Zod for schema validation
+- React Hook Form for form handling
+- Reusable UI primitives (Button, Card, Dialog, Form controls)
+- Dashboard with blog CRUD pages and profile/project update screens
+- API utilities and Axios wrapper in `src/utils`
+
+## Quick structure overview
+
+- `src/app` - Next.js app routes and layouts
+  - `(dashboard)` - Authenticated dashboard area (create/update blogs, profile)
+  - `(public)` - Public-facing pages (home, about, blogs)
+- `src/components` - UI components and modules grouped by feature
+  - `modules/Blog` - Blog components (list, details, forms)
+  - `ui` - Design system primitives (button, input, dialog, form helpers)
+- `src/action` - Client/server actions (create/update blog, profile)
+- `src/utils` - API helpers and Axios instance
+- `src/provider` - Auth provider and context
+
+## Prerequisites
+
+- Node.js 18+ (recommended)
+- pnpm or npm (examples below use npm)
+
+## Setup (Windows PowerShell)
+
+Open PowerShell in the project root (`c:\Level2\blog-app`) and run:
+
+```powershell
+# install dependencies
+npm install
+
+# start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app will typically be available at http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Linting, Formatting & Typecheck
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+npm run lint
+npm run build  # runs TypeScript checks and Next build
+```
 
-## Learn More
+## Working with forms
 
-To learn more about Next.js, take a look at the following resources:
+- Forms use `react-hook-form` and `zod` for validation. Example form schemas are in `src/components/modules/*`.
+- Tags are handled as a string list separated by commas in the UI and normalized to arrays before submission.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Common types and troubleshooting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- If you see TypeScript complaints about `thumbnail` or other optional props (e.g. `Type 'string | undefined' is not assignable to type 'string'`), either:
+  - Ensure the type on the receiving API expects optional fields (e.g. `thumbnail?: string`), or
+  - Normalize the value before calling the API: `payload.thumbnail = payload.thumbnail ?? ''`.
 
-## Deploy on Vercel
+## Tests
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project does not include automated tests by default. Recommended next steps:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# blog-app" 
+- Add unit tests with Jest or Vitest.
+- Add integration tests for API routes.
+
+## Contributing
+
+1. Fork the repo
+2. Create a topic branch
+3. Open a PR describing your changes
+
+Follow the project's code style and add tests for new features where appropriate.
+
+## Notes & Next steps
+
+- Consider adding a short Dockerfile and devcontainer for reproducible development environments.
+- Add CI (GitHub Actions) to run lint/typecheck and tests on pushes/PRs.
+
+---
+
+If you want, I can also:
+
+- Add a short developer setup script for Windows
+- Add a CONTRIBUTING.md and CODE_OF_CONDUCT
+- Add example `.env.local.example` and document required environment variables
+
+Let me know which you'd like next.

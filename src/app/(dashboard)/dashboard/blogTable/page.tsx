@@ -1,7 +1,7 @@
 import BlogTable from "@/components/modules/Blog/BlogTable";
 
 
-const page = () => {
+const blogTable = () => {
     return (
         <div className="mx-auto">
            <BlogTable/> 
@@ -9,4 +9,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default blogTable;

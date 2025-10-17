@@ -1,35 +1,19 @@
 "use client";
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { FC } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Mail, Briefcase, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { MyProfile } from "@/action/useProfile";
 
-interface Profile {
-  name?: string | null;
-  email: string;
-  bio?: string | null;
-  profileUrl?: string | null;
-  location?: string | null;
-  skills?: string[];
-  experience?: object | null;
-  socialLinks?: Record<string, string> | null;
-}
 
-const About: React.FC = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["user"],
-    queryFn: async (): Promise<Profile | null> => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/about`, {
-         cache:"force-cache"
-      });
-      const json = await res.json();
-      return json.data;
-    },
-  });
+
+
+const About: FC = () => {
+
+  const {data, isLoading} = MyProfile()
 
   if (isLoading) {
     return (

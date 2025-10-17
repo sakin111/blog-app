@@ -23,20 +23,21 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const experienceSchema = z.object({
-  role: z.string().min(2),
-  company: z.string().min(2),
-  duration: z.string().min(2),
+  role: z.string().min(2).optional(),
+  company: z.string().min(2).optional(),
+  duration: z.string().min(2).optional(),
   details: z.string().optional(),
 });
 
 const socialLinksSchema = z.object({
-  github: z.string().url("Invalid URL").optional(),
-  linkedin: z.string().url("Invalid URL").optional(),
-  twitter: z.string().url("Invalid URL").optional(),
+  github: z.url("Invalid URL").optional(),
+  linkedin: z.url("Invalid URL").optional(),
+  twitter: z.url("Invalid URL").optional(),
 });
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  name: z.string().min(2, "Name must be at least 2 characters").optional(),
+  email: z.email("Invalid email address").optional(),
   bio: z.string().optional(),
   location: z.string().optional(),
   skills: z.string().optional(),
@@ -65,6 +66,7 @@ export default function UpdateProfileForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       bio: "",
       location: "",
@@ -79,6 +81,7 @@ export default function UpdateProfileForm() {
     if (data) {
       form.reset({
         email: data.email || "",
+        name: data.name || "",
         bio: data.bio || "",
         location: data.location || "",
         skills: data.skills?.join(", ") || "",
@@ -106,6 +109,7 @@ export default function UpdateProfileForm() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        credentials: "include"
       });
 
       if (!res.ok) throw new Error("Failed to update profile");
@@ -140,6 +144,19 @@ export default function UpdateProfileForm() {
             <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="John doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -151,7 +168,13 @@ export default function UpdateProfileForm() {
                   </FormItem>
                 )}
               />
-              <FormField
+       
+            </div>
+
+
+           {/* location */}
+
+                 <FormField
                 control={form.control}
                 name="location"
                 render={({ field }) => (
@@ -164,7 +187,6 @@ export default function UpdateProfileForm() {
                   </FormItem>
                 )}
               />
-            </div>
 
             {/* --- Bio --- */}
             <FormField

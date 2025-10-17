@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext, ReactNode, useState } from "react";
-import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import baseApi from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
-interface User {
+ export interface User {
   id: number;
   name: string;
   email: string;
@@ -15,7 +15,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  refetchUser: () => Promise<QueryObserverResult<User, Error>>;
+  refetchUser: () => Promise<QueryObserverResult<User | null, Error>>;
   logout: () => Promise<void>;
 }
 
@@ -50,27 +50,32 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
       const res = await baseApi.get("/user/me", { withCredentials: true }); 
       return res.data.data as User;
     },
-    staleTime: 5 * 60 * 1000,
-    retry: false,
+  staleTime: 0, 
+  retry: false,
+  initialData: null, 
   });
 
 
 
+const queryClient = useQueryClient();
+
   const logout = async () => {
     try {
       await baseApi.post("/auth/logout");
+       queryClient.clear();
       router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
     }
   };
 
+
   return (
     <AuthContext.Provider
       value={{
         user: user ?? null,
         loading: isLoading,
-        refetchUser: refetch,
+        refetchUser:refetch,
         logout,
       }}
     >

@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import baseApi from "@/utils/axios";
+import {  useQuery,} from "@tanstack/react-query";
+
 
 export type BlogInput = {
   tags: string[];
@@ -10,48 +10,39 @@ export type BlogInput = {
 };
 
 
+interface Profile {
+  name?: string | null;
+  email: string;
+  bio?: string | null;
+  profileUrl?: string | null;
+  location?: string | null;
+  skills?: string[];
+  experience?: object | null;
+  socialLinks?: Record<string, string> | null;
+}
 
-
-export const MyProfile = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/about`, {
-    cache: "force-cache",
+export const MyProfile = () => {
+  const { data, isLoading } = useQuery({
+  queryKey: [],
+  queryFn: async (): Promise<Profile | null> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/about`, {
+     
+    });
+    const json = await res.json();
+    return json.data;
+  },
+  staleTime: 0,
+  retry: false,
+  initialData: null
   });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch blog details");
-  }
-
-  const data = await res.json();
-  return data?.data || data;
+ return {data, isLoading}
 };
 
 
 
-export const useProfileUpdate = () => {
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: { id: number;[key: number]: number | string, payload: BlogInput }) => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/${data.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data.payload),
-        credentials: "include"
-      });
 
-      if (!res.ok) {
-        throw new Error(`Failed to update blog (${res.status})`);
-      }
 
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["blogs"] });
-    },
-  });
-};
 
 
 

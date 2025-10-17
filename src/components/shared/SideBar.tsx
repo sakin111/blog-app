@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, PlusCircle, LogOut, Edit2Icon, User2 } from "lucide-react";
+import { Home, PlusCircle, LogOut, Edit2Icon, User2, Plug2Icon, PlusIcon } from "lucide-react";
 import { useAuth } from "@/provider/AuthProvider";
 
 
@@ -44,6 +44,20 @@ const {logout}= useAuth()
         >
           <User2 className="h-4 w-4" />
           Update Profile
+        </Link>
+        <Link
+          href="/dashboard/updateProject"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100 hover:text-black"
+        >
+          <Plug2Icon className="h-4 w-4" />
+          Project Table
+        </Link>
+        <Link
+          href="/dashboard/addProject"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100 hover:text-black"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Add project
         </Link>
       </nav>
 

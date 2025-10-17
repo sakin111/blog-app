@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import baseApi from "@/utils/axios";
 
@@ -7,6 +8,14 @@ export type BlogInput = {
   title: string;
   content: string;
   thumbnail?: string;
+};
+
+export type ProjectInput = {
+  thumbnail?: string,
+  features?: string[],
+  description: string,
+  liveSite?: string,
+  liveLink?: string,
 };
 
 export const useCreateBlog = () => {
@@ -74,7 +83,48 @@ export const useUpdateBlog = () => {
   });
 };
 
+export const useUpdateProject = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: async (data: { id: number;[key: number]: number | string, payload: ProjectInput }) => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/project/${data.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data.payload),
+        credentials: "include"
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to update project (${res.status})`);
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project"] });
+    },
+  });
+};
+
+export const AddPostProject = async (payload: any) => {
+  const res = await baseApi.post("/project/Post", payload);
+  return res.data;
+};
+
+
+export const useAddProject = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: AddPostProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+};
 
 
 
@@ -92,6 +142,24 @@ export const fetchBlogs = async (): Promise<BlogInput[]> => {
   return result?.data?.data || result?.data || [];
 };
 
+
+
+export const fetchProject = async (): Promise<ProjectInput[]> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/project`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch blog posts");
+  }
+
+  const result = await res.json();
+
+  return result?.data?.data || result?.data || [];
+};
+
+
+
 export const AllBlogs = () => {
 
   const {
@@ -105,3 +173,34 @@ export const AllBlogs = () => {
   })
   return { blogs, isLoading, isError, refetch }
 }
+
+
+
+
+
+export const AllProject = () => {
+
+  const {
+    data: projects,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: fetchProject,
+  })
+  return { projects, isLoading, isError, refetch }
+}
+
+
+export const useDeleteProject = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`${baseApi}/blog/project/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete blog");
+      return res.json();
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blog"] }),
+  });
+};
