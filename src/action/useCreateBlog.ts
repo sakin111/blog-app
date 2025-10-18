@@ -47,7 +47,7 @@ export const useDeleteBlog = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: number) => {
-      const res = await fetch(`${baseApi}/blog/${id}`, { method: "DELETE" });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${id}`, { method: "DELETE", credentials:"include" });
       if (!res.ok) throw new Error("Failed to delete blog");
       return res.json();
     },
@@ -150,7 +150,7 @@ export const fetchProject = async (): Promise<ProjectInput[]> => {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch blog posts");
+    throw new Error("Failed to fetch project");
   }
 
   const result = await res.json();
@@ -197,10 +197,10 @@ export const useDeleteProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: number) => {
-      const res = await fetch(`${baseApi}/blog/project/${id}`, { method: "DELETE" });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/project/${id}`, { method: "DELETE" ,credentials: "include"});
       if (!res.ok) throw new Error("Failed to delete blog");
       return res.json();
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blog"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["project"] }),
   });
 };

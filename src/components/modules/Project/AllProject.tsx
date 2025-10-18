@@ -58,13 +58,13 @@ const AllProjects = () => {
         My <span className="text-gray-500">Projects</span>
       </h2>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10 justify-center">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-10 justify-center">
         {data.map((project: ProjectInput) => (
           <Card
             key={project.id}
-            className="max-w-md mx-auto border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all bg-white"
+            className="max-w-lg mx-auto border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all bg-white"
           >
-            <CardHeader className="p-0 relative w-full h-56">
+            <CardHeader className="p-8 relative w-full h-40">
               {project.thumbnail ? (
                 <Image
                   src={project.thumbnail}
@@ -85,7 +85,7 @@ const AllProjects = () => {
               <div>
          
 
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                <p className="text-gray-600 text-sm mb-4 ">
                   {project.description}
                 </p>
 

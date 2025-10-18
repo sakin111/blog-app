@@ -53,7 +53,8 @@ export function AddProject() {
     try {
       await addProject(values); 
       toast.success("Project added successfully!");
-   router.push("")
+      router.push("/project")
+      form.reset()
     } catch (err) {
       const error = err as Error;
       toast.error(`Failed to post project: ${error.message}`);

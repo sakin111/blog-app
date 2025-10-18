@@ -111,7 +111,7 @@ export function EditForm({ blog, open, onClose }: EditBlogModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         <DialogHeader>
           <DialogTitle>Edit Blog</DialogTitle>
           <DialogDescription>
@@ -119,7 +119,7 @@ export function EditForm({ blog, open, onClose }: EditBlogModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
+        <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
             {/* Title */}
             <FormField

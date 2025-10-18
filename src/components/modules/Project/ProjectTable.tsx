@@ -4,31 +4,41 @@
 import { useState } from "react";
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpdateProject } from "./UpdateProject";
-import Image from "next/image";
 import { AllProject, useDeleteProject } from "@/action/useCreateBlog";
+import Link from "next/link";
+
+
+
+
+
 
 export default function ProjectTable() {
-  const { projects = [], isLoading, refetch } = AllProject();
+  const { projects = [], isLoading } = AllProject();
   const deleteProject = useDeleteProject();
 
   const [open, setOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<any>(null);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
-    try {
-      await deleteProject.mutateAsync(id);
-      toast.success("Project deleted successfully!");
-      refetch();
-    } catch (error) {
-      toast.error("Failed to delete project.");
-      console.error(error);
-    }
+    console.log(id, "this is project id");
+    deleteProject.mutate(id, {
+      onSuccess: () => {
+        toast.success("Project deleted successfully!");
+      },
+      onError: (error: any) => {
+        console.error(error);
+        toast.error(error.message || "Failed to delete project.");
+      },
+    });
   };
+
+
 
   const handleEdit = (project: any) => {
     setSelectedProject(project);
@@ -38,7 +48,6 @@ export default function ProjectTable() {
   const handleClose = () => {
     setOpen(false);
     setSelectedProject(null);
-    refetch();
   };
 
   if (isLoading) {
@@ -81,44 +90,54 @@ export default function ProjectTable() {
                   {projects.map((project: any, index: number) => (
                     <tr
                       key={project.id || index}
-                      className={`border-b hover:bg-gray-50 transition-colors ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      }`}
+                      className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        }`}
                     >
                       <td className="p-4 text-gray-700 font-medium">
                         {project.id}
                       </td>
-                      <td className="p-4 text-gray-700 font-medium">
+
+                      <td className="p-4">
                         {project.thumbnail ? (
-                    
-                             <Image
-                                        src={project.thumbnail}
-                                        alt={"Project Thumbnail"}
-                                        width={500}
-                                        height={500}
-                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
+                          <Image
+                            src={project.thumbnail}
+                            alt="Project Thumbnail"
+                            width={80}
+                            height={80}
+                            className="rounded-md object-cover"
+                          />
                         ) : (
-                          <span className="text-gray-400 italic">No image</span>
+                          <span className="text-gray-400 italic">
+                            No image
+                          </span>
                         )}
                       </td>
+
                       <td className="p-4 text-blue-600 underline">
-                        <a
-                          href={project.liveSite}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="border-gray-300 text-gray-800 hover:bg-gray-800 hover:text-white transition-all ml-5"
                         >
-                          Visit
-                        </a>
+
+                          <Link
+                            href={project.liveSite}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >Visit</Link>
+                        </Button>
                       </td>
+
                       <td className="p-4 text-gray-600 truncate max-w-[250px]">
                         {project.description || "No description"}
                       </td>
-                      <td className="p-4 text-gray-600">
+
+                      <td className="p-4 text-gray-600 ">
                         {project.features?.length
                           ? project.features.join(", ")
                           : "—"}
                       </td>
+
                       <td className="p-4 text-center">
                         <div className="flex justify-center gap-3 flex-wrap">
                           <Button
@@ -130,14 +149,22 @@ export default function ProjectTable() {
                             <Pencil className="w-4 h-4 mr-1" />
                             Edit
                           </Button>
+
                           <Button
                             onClick={() => handleDelete(project.id)}
                             size="sm"
                             variant="outline"
+                            disabled={deleteProject.isPending}
                             className="border-red-500 text-red-600 hover:bg-red-50"
                           >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Delete
+                            {deleteProject.isPending ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <>
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </>
+                            )}
                           </Button>
                         </div>
                       </td>

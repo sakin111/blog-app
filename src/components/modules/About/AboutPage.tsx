@@ -57,8 +57,7 @@ const About: FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <Card className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-xl">
-          {/* Header Banner */}
-          <div className="h-32 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500" />
+          <div className="h-32 bg-gradient-to-r from-gray-500 to-black" />
           
           <CardContent className="p-6 sm:p-8">
             {/* Profile Picture & Basic Info */}
