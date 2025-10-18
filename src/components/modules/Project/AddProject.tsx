@@ -16,6 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useAddProject } from "@/action/useCreateBlog"; 
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   thumbnail: z.url("Must be a valid URL").optional().or(z.literal("")),
@@ -31,6 +32,8 @@ type FormData = z.infer<typeof formSchema>;
 
 
 export function AddProject() {
+
+  const router = useRouter()
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +53,7 @@ export function AddProject() {
     try {
       await addProject(values); 
       toast.success("Project added successfully!");
+   router.push("")
     } catch (err) {
       const error = err as Error;
       toast.error(`Failed to post project: ${error.message}`);

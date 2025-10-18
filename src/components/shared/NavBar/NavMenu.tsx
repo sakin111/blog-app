@@ -32,6 +32,11 @@ return(
           <Link href="/about">About</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link href="/project">Project</Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
     { loading ? <div>loading...</div> : 
    
     user?.email && (  <NavigationMenuItem>

@@ -109,9 +109,9 @@ export const useUpdateProject = () => {
   });
 };
 
-export const AddPostProject = async (payload: any) => {
-  const res = await baseApi.post("/project/Post", payload);
-  return res.data;
+export const AddProject = async (data: any) => {
+  const res = await baseApi.post("blog/project", data);
+  return  res.data;
 };
 
 
@@ -119,7 +119,7 @@ export const useAddProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: AddPostProject,
+    mutationFn: AddProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
@@ -186,7 +186,7 @@ export const AllProject = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ["blogs"],
+    queryKey: ["project"],
     queryFn: fetchProject,
   })
   return { projects, isLoading, isError, refetch }
