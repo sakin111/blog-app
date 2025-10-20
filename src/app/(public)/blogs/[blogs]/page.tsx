@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BlogDetailsCard from "@/components/modules/Blog/BlogDetails";
 
+
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/blogGet`, {
     next: { revalidate: 60 },
@@ -20,15 +21,13 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ Correct signature — DO NOT use Promise<{ blogs: string }>
 export async function generateMetadata({
   params,
 }: {
   params: { blogs: string };
 }) {
-  // ✅ No `await` on params here — just use it directly
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${params.blogs}`, {
-    cache: "no-store",
+    next: { revalidate: 60 }, 
   });
 
   if (!res.ok) {
@@ -43,7 +42,7 @@ export async function generateMetadata({
 
   return {
     title: blog.title || "Blog Details",
-    description: blog.content?.slice(0, 150) || "Read more about this post",
+    description: blog.content?.slice(0, 150) || "Read more about this post.",
   };
 }
 
@@ -53,8 +52,12 @@ export default async function BlogDetailsPage({
   params: { blogs: string };
 }) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${params.blogs}`, {
-    cache: "no-store",
+    next: { revalidate: 60 },
   });
+
+  if (!res.ok) {
+    return <div className="text-center py-20 text-gray-500">Blog not found.</div>;
+  }
 
   const json = await res.json();
   const blog = json.data || json.blog || {};
@@ -64,8 +67,10 @@ export default async function BlogDetailsPage({
   }
 
   return (
-    <div className="py-20 px-4 max-w-7xl mx-auto">
-      <BlogDetailsCard blog={blog} />
+    <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="w-full">
+        <BlogDetailsCard blog={blog} />
+      </div>
     </div>
   );
 }

@@ -22,15 +22,13 @@ import { login } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-
 const loginSchema = z.object({
   email: z.email("Invalid email"),
   password: z.string().min(1, "Password is required"),
 });
 
 export default function LoginForm() {
-
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -44,37 +42,37 @@ export default function LoginForm() {
       const res = await login(values);
       if (res?.success) {
         toast.success(res.message || "User Logged in Successfully");
-        router.push("/dashboard")
+        router.push("/dashboard");
       } else {
-        toast.error( "User Login Failed");
+        toast.error("User Login Failed");
       }
-    }   catch (err: any) {
-  if (axios.isAxiosError(err) && err.response) {
-    const message = err.response.data?.message;
-    console.log(message);
-
-    if (message === "Invalid credentials") {
-      toast.error("Invalid credentials");
-    } else if (message === "User not found") {
-      toast.error("User not found");
-    } else {
-      toast.error(message || "Login failed");
+    } catch (err: any) {
+      if (axios.isAxiosError(err) && err.response) {
+        const message = err.response.data?.message;
+        if (message === "Invalid credentials") {
+          toast.error("Invalid credentials");
+        } else if (message === "User not found") {
+          toast.error("User not found");
+        } else {
+          toast.error(message || "Login failed");
+        }
+      } else {
+        toast.error("Login failed");
+      }
     }
-  } else {
-    toast.error("Login failed");
-  }
-}
-  }
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <div className="space-y-6 w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4 sm:px-6">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-lg xl:max-w-md bg-white p-6 sm:p-8 md:p-10 rounded-lg shadow-lg">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 w-full max-w-md"
+            className="space-y-6 w-full"
           >
-            <h2 className="text-3xl font-bold text-center">Login</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">
+              Login
+            </h2>
 
             {/* Email */}
             <FormField
@@ -88,6 +86,7 @@ export default function LoginForm() {
                       type="email"
                       placeholder="Enter your email"
                       {...field}
+                      className="text-sm sm:text-base md:text-lg"
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,6 +106,7 @@ export default function LoginForm() {
                       type="password"
                       placeholder="Enter your password"
                       {...field}
+                      className="text-sm sm:text-base md:text-lg"
                     />
                   </FormControl>
                   <FormMessage />
@@ -116,7 +116,7 @@ export default function LoginForm() {
 
             <Button
               type="submit"
-              className="w-full mt-2"
+              className="w-full py-3 sm:py-4 text-sm sm:text-base md:text-lg mt-2"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting ? "Logging in..." : "Login"}

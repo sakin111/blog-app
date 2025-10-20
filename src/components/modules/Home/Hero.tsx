@@ -24,7 +24,7 @@ export default async function Hero() {
         />
 
         <section className="relative flex flex-col items-center justify-center text-center py-28 px-6 text-white">
-          {/* Headline */}
+
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight max-w-5xl leading-tight">
             Blogs That You Will Find fascinating <br className="hidden md:block" />
 
