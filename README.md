@@ -60,12 +60,7 @@ npm run build  # runs TypeScript checks and Next build
   - Ensure the type on the receiving API expects optional fields (e.g. `thumbnail?: string`), or
   - Normalize the value before calling the API: `payload.thumbnail = payload.thumbnail ?? ''`.
 
-## Tests
 
-This project does not include automated tests by default. Recommended next steps:
-
-- Add unit tests with Jest or Vitest.
-- Add integration tests for API routes.
 
 ## Contributing
 
@@ -75,17 +70,5 @@ This project does not include automated tests by default. Recommended next steps
 
 Follow the project's code style and add tests for new features where appropriate.
 
-## Notes & Next steps
 
-- Consider adding a short Dockerfile and devcontainer for reproducible development environments.
-- Add CI (GitHub Actions) to run lint/typecheck and tests on pushes/PRs.
 
----
-
-If you want, I can also:
-
-- Add a short developer setup script for Windows
-- Add a CONTRIBUTING.md and CODE_OF_CONDUCT
-- Add example `.env.local.example` and document required environment variables
-
-Let me know which you'd like next.
