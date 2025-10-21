@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BlogDetailsCard from "@/components/modules/Blog/BlogDetails";
 
-
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/blogGet`, {
     next: { revalidate: 60 },
@@ -24,10 +23,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { blogs: string };
+  params: Promise<{ blogs: string }>;
 }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${params.blogs}`, {
-    next: { revalidate: 60 }, 
+  const { blogs } = await params;
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${blogs}`, {
+    next: { revalidate: 60 },
   });
 
   if (!res.ok) {
@@ -49,9 +50,11 @@ export async function generateMetadata({
 export default async function BlogDetailsPage({
   params,
 }: {
-  params: { blogs: string };
+  params: Promise<{ blogs: string }>;
 }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${params.blogs}`, {
+  const { blogs } = await params; // 👈 await params here
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${blogs}`, {
     next: { revalidate: 60 },
   });
 
