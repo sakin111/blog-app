@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { login } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "@/provider/AuthProvider";
 
 const loginSchema = z.object({
   email: z.email("Invalid email"),
@@ -29,6 +30,7 @@ const loginSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
+  const { refetchUser } = useAuth();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -42,6 +44,7 @@ export default function LoginForm() {
       const res = await login(values);
       if (res?.success) {
         toast.success(res.message || "User Logged in Successfully");
+         await refetchUser();
         router.push("/dashboard");
       } else {
         toast.error("User Login Failed");

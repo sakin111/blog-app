@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useAuth } from "@/provider/AuthProvider";
 import baseApi from "./axios";
+
+
 
 export const login = async (values: { email: string; password: string }) => {
   try {
