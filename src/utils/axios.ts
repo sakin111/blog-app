@@ -20,15 +20,17 @@ baseApi.interceptors.response.use(
     if (error.response?.status === 401) {
       try {
         await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
+          `${process.env.NEXT_PUBLIC_BASE_API}/auth/refresh-token`,
           {},
           { withCredentials: true }
         );
         return baseApi(error.config);
       } catch (err) {
         console.error("Session expired, redirecting...", err);
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
+         if (typeof window !== "undefined") {
+          setTimeout(() => {
+            window.location.replace("/login");
+          }, 200);
         }
       }
     }
