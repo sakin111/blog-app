@@ -21,7 +21,6 @@ export default function DashboardHome() {
   }
 
   if (!user) {
-    // Don’t render anything while redirecting
     return null;
   }
 
