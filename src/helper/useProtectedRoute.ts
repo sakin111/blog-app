@@ -10,8 +10,7 @@ export const useProtectedRoute = () => {
 
   useEffect(() => {
     if (!loading && !user) {
-
-      router.replace("/");
+      router.push("/login");
     }
   }, [loading, user, router]);
 
