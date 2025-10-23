@@ -4,7 +4,7 @@ import { createContext, useContext, ReactNode, useState } from "react";
 import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import baseApi from "@/utils/axios";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+
 
 
  export interface User {
