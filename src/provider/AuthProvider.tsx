@@ -58,37 +58,40 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
     queryKey: ["user"],
     queryFn: async () => {
       try {
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, { 
-          credentials:"include",
+        // FIXED: Use Next.js fetch with credentials
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
+          method: "GET",
+          credentials: "include", // Important: sends cookies
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+          },
+          cache: "no-store", // Don't cache auth requests
+        });
+
+        if (!res.ok) {
+          console.log("User fetch failed:", res.status, res.statusText);
+          
+          // Handle 401/403/404 as "not authenticated"
+          if (res.status === 401 || res.status === 403 || res.status === 404) {
+            return null;
           }
-        }); 
-        console.log("User data fetched:", res.json());
-        return res.json()
-      } catch (error: any) {
-
-        console.log("User not authenticated:", error?.response?.status);
-
-        if (error?.response?.status === 401) {
-          return null;
+          
+          throw new Error(`Failed to fetch user: ${res.status}`);
         }
 
-        throw error;
+        const data = await res.json();
+        console.log("User data fetched successfully:", data.data);
+        
+        return data.data as User;
+      } catch (error) {
+        console.error("User fetch error:", error);
+        return null;
       }
     },
-
     staleTime: 0,
-
-    retry: (failureCount, error: any) => {
-
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        return false;
-      }
-      return failureCount < 1;
-    },
+    retry: false, // Don't retry failed auth requests
     refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   const logout = async () => {
