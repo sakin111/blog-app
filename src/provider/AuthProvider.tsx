@@ -4,6 +4,8 @@ import { createContext, useContext, ReactNode, useState } from "react";
 import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import baseApi from "@/utils/axios";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
 
  export interface User {
   id: number;
@@ -43,10 +45,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
+
+const baseApiPromise = import("@/utils/axios").then(m => m.default);
+
 const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: ReturnType<typeof useRouter> }) => {
   const { data: user, isLoading, refetch } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
+       const baseApi = await baseApiPromise;
       const res = await baseApi.get("/user/me", { withCredentials: true }); 
       return res.data.data as User;
     },
