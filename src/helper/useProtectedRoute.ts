@@ -1,18 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/provider/AuthProvider";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export const useProtectedRoute = () => {
-  const { user, loading} = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [loading, user, router]);
+   
+    if (!loading) {
+      setIsChecking(false);
 
-  return { user, loading };
+      const isDashboardRoute = pathname?.startsWith("/dashboard");
+      
+      if (!user && isDashboardRoute) {
+        router.push("/login");
+      }
+    }
+  }, [loading, user, router, pathname]);
+
+  return { user, loading: loading || isChecking };
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { createContext, useContext, ReactNode, useState } from "react";
@@ -5,9 +6,7 @@ import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery, useQue
 import baseApi from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
-
-
- export interface User {
+export interface User {
   id: number;
   name: string;
   email: string;
@@ -36,7 +35,14 @@ interface AuthProviderProps {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
 
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        refetchOnWindowFocus: false,
+      },
+    },
+  }));
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -45,43 +51,68 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-
-const baseApiPromise = import("@/utils/axios").then(m => m.default);
-
 const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: ReturnType<typeof useRouter> }) => {
+  const queryClient = useQueryClient();
+
   const { data: user, isLoading, refetch } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-       const baseApi = await baseApiPromise;
-      const res = await baseApi.get("/user/me", { withCredentials: true }); 
-      return res.data.data as User;
+      try {
+
+        const res = await baseApi.get("/user/me", { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }); 
+        console.log("User data fetched:", res.data.data);
+        return res.data.data as User;
+      } catch (error: any) {
+
+        console.log("User not authenticated:", error?.response?.status);
+
+        if (error?.response?.status === 401) {
+          return null;
+        }
+
+        throw error;
+      }
     },
-  staleTime: 0, 
 
-  initialData: null, 
+    staleTime: 0,
+
+    retry: (failureCount, error: any) => {
+
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        return false;
+      }
+      return failureCount < 1;
+    },
+    refetchOnMount: true,
   });
-
-
-
-const queryClient = useQueryClient();
 
   const logout = async () => {
     try {
-      await baseApi.post("/auth/logout");
-       queryClient.clear();
+      await baseApi.post("/auth/logout", {}, { withCredentials: true });
+
+      queryClient.clear();
+
+      queryClient.setQueryData(["user"], null);
       router.push("/login");
+      router.refresh();
     } catch (err) {
       console.error("Logout failed:", err);
+      queryClient.setQueryData(["user"], null);
+      router.push("/login");
     }
   };
-
 
   return (
     <AuthContext.Provider
       value={{
         user: user ?? null,
         loading: isLoading,
-        refetchUser:refetch,
+        refetchUser: refetch,
         logout,
       }}
     >

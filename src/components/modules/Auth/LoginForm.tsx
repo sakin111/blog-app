@@ -44,8 +44,16 @@ export default function LoginForm() {
       const res = await login(values);
       if (res?.success) {
         toast.success(res.message || "User Logged in Successfully");
-         await refetchUser();
-        router.push("/dashboard");
+        
+        // FIXED: Wait for user data to be fetched before redirecting
+        await refetchUser();
+        
+        // Add a small delay to ensure cookies are set
+        setTimeout(() => {
+          router.push("/dashboard");
+          // Force a hard refresh to ensure middleware runs
+          router.refresh();
+        }, 100);
       } else {
         toast.error("User Login Failed");
       }
