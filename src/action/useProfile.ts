@@ -25,8 +25,7 @@ export const MyProfile = () => {
   const { data, isLoading } = useQuery({
   queryKey: [],
   queryFn: async (): Promise<Profile | null> => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/about`, {
-     
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/about`, {  
     });
     const json = await res.json();
     return json.data;

@@ -57,7 +57,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
       return res.data.data as User;
     },
   staleTime: 0, 
-  retry: false,
+
   initialData: null, 
   });
 
