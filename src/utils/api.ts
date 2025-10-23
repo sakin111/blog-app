@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useAuth } from "@/provider/AuthProvider";
+
 import baseApi from "./axios";
 
 

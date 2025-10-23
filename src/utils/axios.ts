@@ -1,5 +1,6 @@
-import axios from "axios";
+"use client"
 
+import axios from "axios";
 
 const baseApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_API,
