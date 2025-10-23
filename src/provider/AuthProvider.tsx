@@ -59,14 +59,14 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
     queryFn: async () => {
       try {
 
-        const res = await baseApi.get("/user/me", { 
-          withCredentials: true,
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, { 
+          credentials:"include",
           headers: {
             'Content-Type': 'application/json',
           }
         }); 
-        console.log("User data fetched:", res.data.data);
-        return res.data.data as User;
+        console.log("User data fetched:", res.json());
+        return res.json()
       } catch (error: any) {
 
         console.log("User not authenticated:", error?.response?.status);
