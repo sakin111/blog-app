@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -24,13 +24,15 @@ import axios from "axios";
 import { useAuth } from "@/provider/AuthProvider";
 
 const loginSchema = z.object({
-  email: z.email("Invalid email"),
+  email: z.string().email("Invalid email"),
   password: z.string().min(1, "Password is required"),
 });
 
 export default function LoginForm() {
   const router = useRouter();
   const { refetchUser } = useAuth();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -42,22 +44,20 @@ export default function LoginForm() {
   const onSubmit = async (values: any) => {
     try {
       const res = await login(values);
+      
       if (res?.success) {
         toast.success(res.message || "User Logged in Successfully");
         
-        // FIXED: Wait for user data to be fetched before redirecting
-        await refetchUser();
-        
-        // Add a small delay to ensure cookies are set
-        setTimeout(() => {
-          router.push("/dashboard");
-          // Force a hard refresh to ensure middleware runs
-          router.refresh();
-        }, 100);
+        setIsRedirecting(true);
+        router.push("/dashboard");
+
+        refetchUser().catch(console.error);
       } else {
-        toast.error("User Login Failed");
+        toast.error(res?.message || "User Login Failed");
       }
     } catch (err: any) {
+      setIsRedirecting(false);
+      
       if (axios.isAxiosError(err) && err.response) {
         const message = err.response.data?.message;
         if (message === "Invalid credentials") {
@@ -70,8 +70,11 @@ export default function LoginForm() {
       } else {
         toast.error("Login failed");
       }
+      console.error("Login error:", err);
     }
   };
+
+  const isSubmitting = form.formState.isSubmitting || isRedirecting;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4 sm:px-6">
@@ -98,6 +101,7 @@ export default function LoginForm() {
                       placeholder="Enter your email"
                       {...field}
                       className="text-sm sm:text-base md:text-lg"
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -118,6 +122,7 @@ export default function LoginForm() {
                       placeholder="Enter your password"
                       {...field}
                       className="text-sm sm:text-base md:text-lg"
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -128,9 +133,9 @@ export default function LoginForm() {
             <Button
               type="submit"
               className="w-full py-3 sm:py-4 text-sm sm:text-base md:text-lg mt-2"
-              disabled={form.formState.isSubmitting}
+              disabled={isSubmitting}
             >
-              {form.formState.isSubmitting ? "Logging in..." : "Login"}
+              {isSubmitting ? "Logging in..." : "Login"}
             </Button>
           </form>
         </Form>

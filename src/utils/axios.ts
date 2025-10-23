@@ -41,9 +41,14 @@ baseApi.interceptors.response.use(
       originalRequest.url?.includes('/auth/logout') ||
       originalRequest.url?.includes('/auth/refresh-token');
 
-    if (error.response?.status === 401 && !isAuthEndpoint && !originalRequest._retry) {
-      if (isRefreshing) {
 
+    const shouldRefreshToken = 
+      (error.response?.status === 401 || error.response?.status === 403) && 
+      !isAuthEndpoint && 
+      !originalRequest._retry;
+
+    if (shouldRefreshToken) {
+      if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -55,24 +60,25 @@ baseApi.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        console.log("Refreshing token due to", error.response?.status);
+        
         await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_API}/auth/refresh-token`,
           {},
           { withCredentials: true }
         );
         
+        console.log("Token refreshed successfully");
         isRefreshing = false;
         processQueue(null);
-        
-        // FIXED: Retry the original request
+
         return baseApi(originalRequest);
       } catch (err) {
         isRefreshing = false;
         processQueue(err, null);
         
-        console.error("Session expired, redirecting...", err);
+        console.error("Token refresh failed:", err);
         
-
         if (typeof window !== "undefined" && !window.location.pathname.includes('/login')) {
           window.location.href = "/login";
         }
