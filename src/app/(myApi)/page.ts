@@ -1,15 +1,10 @@
 
 
-import { cookies } from "next/headers";
-
 export async function getUser() {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get("accessToken")?.value;
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+   credentials:"include",
+   cache:"no-cache"
   });
 
   if (!res.ok) return null;
