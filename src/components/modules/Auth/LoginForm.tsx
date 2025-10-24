@@ -49,7 +49,7 @@ export default function LoginForm() {
         toast.success(res.message || "User Logged in Successfully");
         
         setIsRedirecting(true);
-        router.push("/dashboard");
+        router.push("/");
 
         refetchUser().catch(console.error);
       } else {

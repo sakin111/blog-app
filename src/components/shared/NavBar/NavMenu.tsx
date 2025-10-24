@@ -12,6 +12,7 @@ import Link from "next/link";
 
 export const NavMenu = (props: NavigationMenuProps) => {
  const {user, loading} = useAuth()
+ console.log(user,"this is from navigation");
  
 
 return(
