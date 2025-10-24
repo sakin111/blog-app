@@ -54,7 +54,6 @@ export const MyProfile = () => {
 
     if (!res.ok) {
       if ([401, 403, 404].includes(res.status)) {
-        // user not logged in
         return null;
       }
       throw new Error(`Failed to fetch user: ${res.status}`);
