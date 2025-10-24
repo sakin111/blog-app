@@ -1,12 +1,12 @@
 // components/navigation/NavMenu.tsx
 import Link from "next/link";
-import { getUser } from "@/action/useProfile";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { getUser } from "@/app/(myApi)/page";
 
 interface NavMenuProps {
   orientation?: "horizontal" | "vertical";
