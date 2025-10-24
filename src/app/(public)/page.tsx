@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import BlogCard from "@/components/modules/Blog/BlogCard";
+
 import Featured from "@/components/modules/Home/Featured";
 import Hero from "@/components/modules/Home/Hero";
 import Popular from "@/components/modules/Home/Popular";

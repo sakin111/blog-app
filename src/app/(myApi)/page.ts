@@ -1,28 +1,19 @@
+
+
 import { cookies } from "next/headers";
 
 export async function getUser() {
-  try {
-    const cookieStore = cookies();
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("accessToken")?.value;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
-      },
-      cache: "no-store",
-    });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    if (!res.ok) {
-      if ([401, 403, 404].includes(res.status)) {
-        return null;
-      }
-      throw new Error(`Failed to fetch user: ${res.status}`);
-    }
-
-    return await res.json();
-  } catch (err) {
-    console.error("Error fetching user:", err);
-    throw new Error("Network or API error occurred.");
-  }
+  if (!res.ok) return null;
+  return res.json();
 }
+
+
