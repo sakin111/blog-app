@@ -58,20 +58,19 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
     queryKey: ["user"],
     queryFn: async () => {
       try {
-        // FIXED: Use Next.js fetch with credentials
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
           method: "GET",
-          credentials: "include", // Important: sends cookies
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-          cache: "no-store", // Don't cache auth requests
+          cache: "no-store", 
         });
 
         if (!res.ok) {
           console.log("User fetch failed:", res.status, res.statusText);
           
-          // Handle 401/403/404 as "not authenticated"
           if (res.status === 401 || res.status === 403 || res.status === 404) {
             return null;
           }
@@ -89,7 +88,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
       }
     },
     staleTime: 0,
-    retry: false, // Don't retry failed auth requests
+    retry: false, 
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
