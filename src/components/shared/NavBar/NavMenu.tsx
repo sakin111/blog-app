@@ -11,8 +11,7 @@ import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 
 export const NavMenu = (props: NavigationMenuProps) => {
- const {user, loading} = useAuth()
- 
+ const { user, loading } = useAuth() 
 
 return(
     <NavigationMenu {...props}>
@@ -37,14 +36,19 @@ return(
           <Link href="/project">Project</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
-    { loading ? <div>loading...</div> : 
-   
-    user?.email && (  <NavigationMenuItem>
+    { loading ? (
+      <NavigationMenuItem>
+        <span className="text-sm text-muted-foreground">Loading...</span>
+      </NavigationMenuItem>
+    ) : 
+    
+    user?.email && (
+      <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link href="/dashboard">Dashboard</Link>
         </NavigationMenuLink>
-      </NavigationMenuItem>)}
-    </NavigationMenuList>
+      </NavigationMenuItem>
+    )}    </NavigationMenuList>
   </NavigationMenu>
 )
 
