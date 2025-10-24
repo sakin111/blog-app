@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode, useState, useCallback, useEffect } from "react";
 import { QueryClient, QueryClientProvider, QueryObserverResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import baseApi from "@/utils/axios";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  refetchUser: () => Promise<QueryObserverResult<User | null, Error>>;
+  // refetchUser: () => Promise<QueryObserverResult<User | null, Error>>;
   logout: () => Promise<void>;
 }
 
@@ -54,44 +54,97 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: ReturnType<typeof useRouter> }) => {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, refetch } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      try {
+  // const { data: user, isLoading, refetch } = useQuery({
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store", 
-        });
+  //   queryKey: ["user"],
+  //   queryFn: async () => {
+  //     try {
 
-        if (!res.ok) {
-          console.log("User fetch failed:", res.status, res.statusText);
+  //       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
+  //         method: "GET",
+  //         credentials: "include",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         cache: "no-store", 
+  //       });
+
+  //       if (!res.ok) {
+  //         console.log("User fetch failed:", res.status, res.statusText);
           
-          if (res.status === 401 || res.status === 403 || res.status === 404) {
-            return null;
-          }
+  //         if (res.status === 401 || res.status === 403 || res.status === 404) {
+  //           return null;
+  //         }
           
+  //         throw new Error(`Failed to fetch user: ${res.status}`);
+  //       }
+
+  //       const data = await res.json();
+  //       console.log("User data fetched successfully:", data.data);
+        
+  //       return data.data as User;
+  //     } catch (error) {
+  //       console.error("User fetch error:", error);
+  //       return null;
+  //     }
+  //   },
+  //   staleTime: 0,
+  //   retry: false, 
+  //   refetchOnMount: true,
+  //   refetchOnWindowFocus: false,
+  // });
+
+
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Start loading true
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchUser = useCallback(async () => {
+    setIsLoading(true); // Set loading true on every fetch
+    setError(null);     // Clear previous errors
+
+    try {
+      // FIX: Replaced process.env variable with a placeholder API URL
+      // as process is not available in the client-side environment.
+      const res = await fetch(`https://api.example.com/user/me`, {
+        method: "GET",
+        credentials: "include", // Important for sending auth cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store", // Ensures fresh data
+      });
+
+      if (!res.ok) {
+        console.log("User fetch failed:", res.status, res.statusText);
+
+        // Handle "not logged in" as a null user, not an error
+        if (res.status === 401 || res.status === 403 || res.status === 404) {
+          setUser(null);
+        } else {
+          // For other server errors, throw an error
           throw new Error(`Failed to fetch user: ${res.status}`);
         }
-
-        const data = await res.json();
-        console.log("User data fetched successfully:", data.data);
-        
-        return data.data as User;
-      } catch (error) {
-        console.error("User fetch error:", error);
-        return null;
+      } else {
+     return
       }
-    },
-    staleTime: 0,
-    retry: false, 
-    refetchOnMount: true,
-    refetchOnWindowFocus: false,
-  });
+
+    } catch (err: any) {
+      console.error("User fetch error:", err);
+      setError(new Error("Network or API reference error. Placeholder API used."));
+      setUser(null); // Ensure user is null on error
+    } finally {
+      setIsLoading(false); // Stop loading in all cases
+    }
+  }, []); // Empty dependency array, this function is stable
+
+  // useEffect to run the fetch on component mount
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+
+
 
   const logout = async () => {
     try {
@@ -114,7 +167,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
       value={{
         user: user ?? null,
         loading: isLoading,
-        refetchUser: refetch,
+        // refetchUser: refetch,
         logout,
       }}
     >

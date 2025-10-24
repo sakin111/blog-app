@@ -30,7 +30,7 @@ const loginSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
-  const { refetchUser } = useAuth();
+  // const { refetchUser } = useAuth();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm({
@@ -51,7 +51,7 @@ export default function LoginForm() {
         setIsRedirecting(true);
         router.push("/");
 
-        refetchUser().catch(console.error);
+        // refetchUser().catch(console.error);
       } else {
         toast.error(res?.message || "User Login Failed");
       }
