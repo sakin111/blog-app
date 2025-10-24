@@ -106,7 +106,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
     try {
       // FIX: Replaced process.env variable with a placeholder API URL
       // as process is not available in the client-side environment.
-      const res = await fetch(`https://api.example.com/user/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
         method: "GET",
         credentials: "include", // Important for sending auth cookies
         headers: {
