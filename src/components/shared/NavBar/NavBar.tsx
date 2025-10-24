@@ -1,11 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { NavMenu } from "./NavMenu";
 import Logo from "./Logo";
 import { SmNavigation } from "./SmNavigation";
 import { useAuth } from "@/provider/AuthProvider";
 import { Loader2 } from "lucide-react";
-import NavMenu from "./NavMenu";
 
 
 

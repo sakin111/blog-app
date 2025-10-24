@@ -1,23 +1,41 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export const config = {
-  matcher: ["/dashboard/:path*"]
-};
+import { NextRequest, NextResponse } from "next/server";
+
+
+const protectedRoutes = ["/dashboard"];
+const publicRoutes = ["/login", "/"];
 
 export function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+
+
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route)
+  );
+  const isPublicRoute = publicRoutes.includes(path);
+
+
   const accessToken = req.cookies.get("accessToken")?.value;
 
-  console.log("Middleware - Path:", req.nextUrl.pathname);
-  console.log("Middleware - Has accessToken:", !!accessToken);
 
-  if (!accessToken) {
-    console.log("Middleware - No token, redirecting to login");
+  if (isProtectedRoute && !accessToken) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  console.log("Middleware - Token found, allowing access");
+  if (isPublicRoute && accessToken && path !== "/dashboard") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+
   return NextResponse.next();
 }
+
+
+export const config = {
+  matcher: ["/dashboard/:path*"], 
+};
+

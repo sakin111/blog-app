@@ -1,19 +1,14 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Logo from "./Logo";
-
-
-const NavMenu= dynamic(() => import("./NavMenu"), {
-  ssr: true,
-});
+import { NavMenu } from "./NavMenu";
 
 export const SmNavigation = () => {
   return (
+
     <div className="block lg:hidden md:hidden">
       <Sheet>
         <SheetTrigger asChild>
@@ -31,20 +26,19 @@ export const SmNavigation = () => {
           side="left"
           className="w-[85%] sm:w-[70%] bg-white shadow-xl border-r border-gray-200 flex flex-col"
         >
+
           <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4 px-4">
             <Logo />
           </div>
 
+
           <nav className="flex-1 overflow-y-auto">
-            <Suspense
-              fallback={<div className="text-gray-400 text-center py-4">Loading...</div>}
-            >
-              <NavMenu
-                orientation="vertical"
-                className="flex flex-col gap-4 font-medium text-gray-700 mx-7"
-              />
-            </Suspense>
+            <NavMenu
+              orientation="vertical"
+              className="flex flex-col gap-4 font-medium text-gray-700 mx-7"
+            />
           </nav>
+
         </SheetContent>
       </Sheet>
     </div>
