@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 export async function getUser() {
   try {
     const cookieStore = cookies();
