@@ -6,7 +6,8 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { getUser } from "@/app/(myApi)/page";
+import { getUser } from "@/action/useProfile";
+
 
 interface NavMenuProps {
   orientation?: "horizontal" | "vertical";
