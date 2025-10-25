@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/provider/AuthProvider";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 
 export default function DashboardHome() {
@@ -17,11 +18,12 @@ export default function DashboardHome() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold">
-        Welcome, {user?.name || "Guest"}
-      </h1>
-      <p>Role: {user?.role || "N/A"}</p>
-    </div>
+ <Card>
+  <CardHeader>WELCOME TO THE DASHBOARD</CardHeader>
+  <CardContent>
+     {user.name}
+     {user.email}
+  </CardContent>
+ </Card>
   );
 }
