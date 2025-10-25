@@ -59,16 +59,10 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
     queryFn: async () => {
       try {
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store", 
-        });
+        const res = await baseApi.get("/user/me")
+     
 
-        if (!res.ok) {
+        if (!res.data) {
           console.log("User fetch failed:", res.status, res.statusText);
           
           if (res.status === 401 || res.status === 403 || res.status === 404) {
@@ -78,7 +72,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
           throw new Error(`Failed to fetch user: ${res.status}`);
         }
 
-        const data = await res.json();
+        const data = await res.data;
         console.log("User data fetched successfully:", data.data);
         
         return data.data as User;

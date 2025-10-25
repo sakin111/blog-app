@@ -1,8 +1,9 @@
 import DashboardHome from "@/components/shared/DashboardHome";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
 
 
+  
   return (
     <div >
    <DashboardHome/>
