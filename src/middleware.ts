@@ -1,42 +1,23 @@
-
-import { NextRequest, NextResponse } from "next/server";
-
-
-const protectedRoutes = ["/dashboard"];
-const publicRoutes = ["/login", "/", "/blogs", "/about", "/project"];
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname;
-
-
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    path.startsWith(route)
-  );
-  const isPublicRoute = publicRoutes.includes(path);
-
-
   const accessToken = req.cookies.get("accessToken")?.value;
 
-  console.log(accessToken,"this is frommiddleware");
+  const isDashboard = req.nextUrl.pathname.startsWith("/dashboard");
+  const isLogin = req.nextUrl.pathname.startsWith("/login");
 
-
-  if (isProtectedRoute && !accessToken) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  if (!accessToken && isDashboard) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (isPublicRoute && accessToken && path !== "/dashboard") {
-    const url = req.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
+  if (accessToken && isLogin) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
-
 
   return NextResponse.next();
 }
 
-
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/"], 
+  matcher: ["/dashboard/:path*"], 
 };
