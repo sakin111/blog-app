@@ -52,7 +52,7 @@ export default async function BlogDetailsPage({
 }: {
   params: Promise<{ blogs: string }>;
 }) {
-  const { blogs } = await params; // 👈 await params here
+  const { blogs } = await params; 
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/blog/${blogs}`, {
     next: { revalidate: 60 },
