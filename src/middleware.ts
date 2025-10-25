@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 const protectedRoutes = ["/dashboard"];
-const publicRoutes = ["/login", "/"];
+const publicRoutes = ["/login", "/", "/blogs", "/about", "/project"];
 
 export function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -16,6 +16,8 @@ export function middleware(req: NextRequest) {
 
 
   const accessToken = req.cookies.get("accessToken")?.value;
+
+  console.log(accessToken,"this is frommiddleware");
 
 
   if (isProtectedRoute && !accessToken) {

@@ -36,12 +36,7 @@ return(
           <Link href="/project">Project</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
-    { loading ? (
-      <NavigationMenuItem>
-        <span className="text-sm text-muted-foreground">Loading...</span>
-      </NavigationMenuItem>
-    ) : 
-    
+    {
     user?.email && (
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
