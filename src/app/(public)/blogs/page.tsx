@@ -23,6 +23,9 @@ const AllBlogsPage = async () => {
     );
   }
 
+
+
+
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <h2 className="text-center text-3xl sm:text-4xl font-bold mb-10">

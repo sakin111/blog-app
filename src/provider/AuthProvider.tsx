@@ -72,9 +72,7 @@ const InnerAuthProvider = ({ children, router }: { children: ReactNode; router: 
           throw new Error(`Failed to fetch user: ${res.status}`);
         }
 
-        const data = await res.data;
-        console.log("User data fetched successfully:", data.data);
-        
+        const data = await res.data;        
         return data.data as User;
       } catch (error) {
         console.error("User fetch error:", error);
