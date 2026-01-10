@@ -73,5 +73,5 @@ Follow the project's code style and add tests for new features where appropriate
 
 ## Live Link
 
--**frontend**   https://blog-app-pied-three.vercel.app
--**Backend**    https://blog-server-ah0g.onrender.com
+- **frontend**   https://blog-app-pied-three.vercel.app
+- **Backend**    https://blog-server-ah0g.onrender.com
