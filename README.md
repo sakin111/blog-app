@@ -1,6 +1,13 @@
+<img width="1349" height="545" alt="Screenshot (67)" src="https://github.com/user-attachments/assets/9adcc19f-b16a-4241-84a0-c475d65a58da" />
+
 # Blog App
 
 A Next.js + TypeScript blog application scaffolded with a component-driven UI. It includes client and server actions, reusable UI components, and a dashboard for managing blogs and profile updates.
+
+## Live Link
+
+- **frontend**   https://blog-app-pied-three.vercel.app
+- **Backend**    https://blog-server-ah0g.onrender.com
 
 ## Features
 
@@ -70,8 +77,3 @@ npm run build  # runs TypeScript checks and Next build
 
 Follow the project's code style and add tests for new features where appropriate.
 
-
-## Live Link
-
-- **frontend**   https://blog-app-pied-three.vercel.app
-- **Backend**    https://blog-server-ah0g.onrender.com
